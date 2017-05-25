@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body{
+          margin: 0;
+        }
+        .box{
+            padding:10px;
+        }
+        .box .git-box{
+            width:500px;
+            height:auto;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 2px #b70;
+            box-sizing: border-box;
+            padding: 5px 10px;
+        }
+        #canvas{
+            border:1px solid #d8d8d8;
+            position: absolute;
+            top:50%;
+            left:70%;
+            -webkit-transform: translate3d(-50%,-50%,0);
+            -moz-transform: translate3d(-50%,-50%,0);
+            -ms-transform: translate3d(-50%,-50%,0);
+            -o-transform: translate3d(-50%,-50%,0);
+            transform: translate3d(-50%,-50%,0);
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <canvas width="600" height="300" id="canvas"></canvas>
+        <div class="git-box">
+            <div>
+                <h3>全局配置</h3>
+                <ol>
+                    <li>git config --global user.name "nate-river"</li>
+                    <li>git config --global user.email "mayanlong7@icloud.com"</li>
+                    <li>git config --global push.default simple</li>
+                </ol>
+            </div>
+            <div>
+                <h3>clone一个已有的仓库做开发</h3>
+                <ol>
+                    <li>git clone https://github.com/nate-river/bird.git</li>
+                    <li>git --help</li>
+                    <li>git status</li>
+                    <li>git add *</li>
+                    <li>git status</li>
+                    <li>git commit -m 'test cli'</li>
+                    <li>git push</li>
+                </ol>
+                <code>git push 会要求用户名和密码</code>
+            </div>
+            <div>
+                <h3>管理分支</h3>
+                <ol>
+                    <li>git branch gh-pages</li>
+                    <li>git checkout gh-pages</li>
+                    <li>git merge master</li>
+                    <li>git push --set-upstream origin gh-pages</li>
+                </ol>
+                <code>注意 多使用git status 查看自己目前所在的分支</code>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var canvas=document.getElementById('canvas');
+    var ctx=canvas.getContext('2d');//获取上下文画笔
+    //标题
+    function drawHeader(){
+        ctx.save();
+        ctx.fillStyle=('#0b7');//填充颜色
+        ctx.font="bold 24px 微软雅黑";//文字粗细 文字大小 文字格式
+        ctx.fillText("canvas之小练习（表）", 180, 30);//填充文字
+        ctx.restore();
+    }
+    //画圆
+    function drawCircle(){
+        ctx.save();//保持状态
+        ctx.beginPath();//开始一条路径，或重置当前的路径
+        ctx.translate(300,150);
+        ctx.moveTo(100,0);//画笔位置
+        ctx.arc(0,0,100,0,2*Math.PI,true);//圆心（x0，y0） 半径 开始角度 旋转角度 顺逆时针
+        ctx.stroke();//画线
+        ctx.closePath();//闭合曲线
+        ctx.restore();//恢复状态
+    }
+    //画点
+    function drawCode(x){
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(300,150);//改变相对位置
+        ctx.rotate(2*Math.PI/60*x);//旋转
+        if(x%15==0){
+            ctx.moveTo(0,-100);
+            ctx.lineTo(0,-80);
+            ctx.strokeStyle='green';//画线颜色
+        }else if(x%5==0&&x%15!=0){
+            ctx.moveTo(0,-100);
+            ctx.lineTo(0,-88);
+            ctx.strokeStyle='blue';
+        }else{
+            ctx.moveTo(0,-100);
+            ctx.lineTo(0,-93);
+            ctx.strokeStyle='red';
+        }
+        ctx.stroke();//画线
+        ctx.closePath();
+        ctx.restore();
+    }
+    //画针
+    function drawHoursHand(hours){
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(300,150);
+        ctx.rotate(2*Math.PI/12*hours);
+        ctx.arc(0,0,4,0,2*Math.PI,true);
+        ctx.moveTo(0,4);
+        ctx.lineTo(0,10);
+        ctx.moveTo(0,-4);
+        ctx.lineTo(0,-50);
+        ctx.strokeStyle='green';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawMinutesHand(minutes){
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(300,150);
+        ctx.rotate(2*Math.PI/60*minutes);
+        ctx.arc(0,0,3,0,2*Math.PI,true);
+        ctx.moveTo(0,3);
+        ctx.lineTo(0,10);
+        ctx.moveTo(0,-3);
+        ctx.lineTo(0,-60);
+        ctx.strokeStyle='blue';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawSecondsHand(seconds){
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(300,150);
+        ctx.rotate(2*Math.PI/60*seconds);
+        ctx.arc(0,0,2,0,2*Math.PI,true);
+        ctx.moveTo(0,2);
+        ctx.lineTo(0,10);
+        ctx.moveTo(0,-2);
+        ctx.lineTo(0,-70);
+        ctx.strokeStyle='red';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+    //显示当前时间
+    function drawText(hours,minutes,seconds){
+        if(hours<10) hours='0'+hours;
+        if(minutes<10) minutes='0'+minutes;
+        if(seconds<10) seconds='0'+seconds;
+        ctx.save();
+        ctx.translate(100,180);
+        ctx.fillStyle=('#b70');//填充颜色
+        ctx.font="bold 14px 微软雅黑";//文字粗细 文字大小 文字格式
+        ctx.fillText("系统当前时间为："+hours+"时"+minutes+"分"+seconds+"秒", 100, 100);//填充文字
+        ctx.restore();
+    }
+    //画表
+    function watches(){
+        //每次清空画布
+        ctx.clearRect(0,0,600,300);//清空画布
+        var date=new Date();
+        var hours=date.getHours();
+        var minutes=date.getMinutes();
+        var seconds=date.getSeconds();
+        drawHeader();
+        drawCircle();
+        for(var i=0;i<360/6;i++){
+            drawCode(i);
+        }
+        drawHoursHand(hours);
+        drawMinutesHand(minutes);
+        drawSecondsHand(seconds);
+        drawText(hours,minutes,seconds);
+    }
+    setInterval(watches,500);
+</script>
+</html>
